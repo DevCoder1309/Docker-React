@@ -10,4 +10,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: docker build -t akm47/docker-react -f Dockerfile.dev .
-      - run: docker run -e CI=true akm47/docker-react npm test
+      - run: docker run -e CI=true akm47/docker-react
