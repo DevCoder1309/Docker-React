@@ -8,6 +8,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: docker build -t akm47/docker-react -f Dockerfile.dev .
-      - run: docker run -e CI=true akm47/docker-react npm test
+      - run: docker run -e CI=true akm47/docker-frontend npm test
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          application_name: docker-gh
+          environment_name: Dockergh-env
+          existing_bucket_name: elasticbeanstalk-ap-south-1-992382837996
+          region: ap-south-1
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
